@@ -25,10 +25,11 @@ python -m compileall -q src tests
 
 ## Known limitations
 
+- `.gitignore` is now included.
+- `.env.example` is now included with blank placeholders only.
 - Price data is manual/placeholder by default.
-- SEC/FRED fetchers require user-supplied environment configuration.
-- Generated reports are templates; Phase 1 should add cached data snapshots.
-- The GitHub connector safety filter blocked adding `.gitignore` and an environment template through this session; add them manually before relying on local environment files.
+- SEC/FRED helpers require user-supplied configuration for network calls.
+- Phase 1 should add cached data snapshots.
 
 ## Recommended next PR
 
