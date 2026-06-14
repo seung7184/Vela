@@ -1,0 +1,7 @@
+ticker,name,asset_type,benchmark,reason,max_portfolio_weight,default_label
+VWCE,Vanguard FTSE All-World UCITS ETF,ETF,VWCE,Core global equity exposure,1.00,Watchlist
+CSPX,iShares Core S&P 500 UCITS ETF,ETF,VWCE,US equity benchmark comparison,0.40,Watchlist
+NVDA,NVIDIA Corporation,Stock,VWCE,AI growth stock study case,0.05,Study more
+TSLA,Tesla Inc,Stock,VWCE,High-volatility single-stock discipline case,0.03,Study more
+SPY,SPDR S&P 500 ETF Trust,ETF,VWCE,US market proxy for research,0.00,Watchlist
+QQQ,Invesco QQQ Trust,ETF,VWCE,Nasdaq growth proxy for research,0.00,Watchlist
