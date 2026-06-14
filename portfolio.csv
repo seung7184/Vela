@@ -1,0 +1,4 @@
+asset_type,ticker,name,quantity,currency,cost_basis,market_value,role,notes
+ETF,VWCE,Vanguard FTSE All-World UCITS ETF,0,EUR,0,0,core,Default global equity benchmark
+ETF,CSPX,iShares Core S&P 500 UCITS ETF,0,EUR,0,0,satellite,US large-cap exposure
+CASH,EUR,Euro cash,0,EUR,0,0,cash,Dry powder and emergency liquidity
