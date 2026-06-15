@@ -10,6 +10,12 @@ from vela.load_portfolio import load_portfolio, portfolio_total_market_value
 from vela.load_watchlist import find_watchlist_item, load_watchlist
 from vela.models import Scorecard, WatchlistItem
 from vela.score_ticker import build_scorecard, scorecard_to_markdown
+from vela.snapshots import (
+    DEFAULT_SNAPSHOT_DIR,
+    find_snapshot_by_id,
+    snapshot_context_markdown,
+    snapshot_data_highlights_markdown,
+)
 
 
 def ticker_report_markdown(
@@ -17,6 +23,7 @@ def ticker_report_markdown(
     *,
     item: WatchlistItem | None = None,
     scorecard: Scorecard | None = None,
+    snapshot: dict | None = None,
     report_date: date | None = None,
 ) -> str:
     """Create a repeatable ticker research template."""
@@ -37,6 +44,13 @@ def ticker_report_markdown(
         vwce_alternative_test=False,
         final_label="ETF-only is better" if label != "Avoid" else "Avoid",
     )
+    snapshot_sections = ""
+    if snapshot is not None:
+        snapshot_sections = f"""
+{snapshot_context_markdown(snapshot, today=today)}
+
+{snapshot_data_highlights_markdown(snapshot)}
+"""
 
     return f"""# {normalized} Research Report — {today.isoformat()}
 
@@ -49,6 +63,7 @@ def ticker_report_markdown(
 - Benchmark: {benchmark}
 - Watchlist reason: {reason}
 - Starting label: {label}
+{snapshot_sections}
 
 ## Business model
 
@@ -113,13 +128,16 @@ def generate_ticker_report(
     watchlist_path: str | Path = "watchlist.csv",
     output_dir: str | Path = "reports/ticker",
     report_date: date | None = None,
+    snapshot_id: str | None = None,
+    snapshot_dir: str | Path = DEFAULT_SNAPSHOT_DIR,
 ) -> Path:
     items = load_watchlist(watchlist_path)
     item = find_watchlist_item(items, ticker)
     today = report_date or date.today()
+    snapshot = find_snapshot_by_id(snapshot_id, snapshot_dir=snapshot_dir) if snapshot_id else None
     output_path = Path(output_dir) / f"{ticker.upper()}_{today.isoformat()}.md"
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(ticker_report_markdown(ticker, item=item, report_date=today), encoding="utf-8")
+    output_path.write_text(ticker_report_markdown(ticker, item=item, snapshot=snapshot, report_date=today), encoding="utf-8")
     return output_path
 
 
@@ -127,6 +145,7 @@ def weekly_review_markdown(
     *,
     portfolio_path: str | Path = "portfolio.csv",
     watchlist_path: str | Path = "watchlist.csv",
+    snapshot: dict | None = None,
     report_date: date | None = None,
 ) -> str:
     today = report_date or date.today()
@@ -134,6 +153,13 @@ def weekly_review_markdown(
     watchlist = load_watchlist(watchlist_path)
     total_value = portfolio_total_market_value(positions)
     tickers = ", ".join(item.ticker for item in watchlist)
+    snapshot_sections = ""
+    if snapshot is not None:
+        snapshot_sections = f"""
+{snapshot_context_markdown(snapshot, today=today)}
+
+{snapshot_data_highlights_markdown(snapshot)}
+"""
 
     return f"""# Weekly Portfolio Review — {today.isoformat()}
 
@@ -144,6 +170,7 @@ def weekly_review_markdown(
 - Positions loaded: {len(positions)}
 - Total market value from CSV: {total_value}
 - Watchlist tickers: {tickers}
+{snapshot_sections}
 
 ## What changed this week
 
@@ -179,12 +206,20 @@ def generate_weekly_review(
     watchlist_path: str | Path = "watchlist.csv",
     output_dir: str | Path = "reports/weekly",
     report_date: date | None = None,
+    snapshot_id: str | None = None,
+    snapshot_dir: str | Path = DEFAULT_SNAPSHOT_DIR,
 ) -> Path:
     today = report_date or date.today()
+    snapshot = find_snapshot_by_id(snapshot_id, snapshot_dir=snapshot_dir) if snapshot_id else None
     output_path = Path(output_dir) / f"{today.isoformat()}_weekly_review.md"
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(
-        weekly_review_markdown(portfolio_path=portfolio_path, watchlist_path=watchlist_path, report_date=today),
+        weekly_review_markdown(
+            portfolio_path=portfolio_path,
+            watchlist_path=watchlist_path,
+            snapshot=snapshot,
+            report_date=today,
+        ),
         encoding="utf-8",
     )
     return output_path

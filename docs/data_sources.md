@@ -24,27 +24,35 @@ Use:
 
 ```bash
 python -m vela.cli snapshot-summary
+python -m vela.cli ticker NVDA --snapshot-id ticker-nvda-2026-06-14
+python -m vela.cli weekly --snapshot-id weekly-2026-06-14
 ```
 
-The summary command reads local JSON files only. It does not fetch prices, call SEC, call FRED, place orders, or contact a broker.
+The summary command and snapshot-aware report commands read local JSON files only. They do not fetch prices, call SEC, call FRED, place orders, or contact a broker.
+
+Snapshot-aware reports use cached snapshots as report context. They add a `Snapshot context` section and conservative `Snapshot data highlights` section while keeping the normal research discipline sections such as bull case, bear case, downside scenario, VWCE alternative test, and scorecard.
+
+Snapshots can become stale. A cached snapshot should not be treated as current market data or complete market data, even when it contains price, macro, or portfolio fields. Stale snapshots should be refreshed intentionally before they are used for current research.
 
 ## SEC EDGAR
 
 SEC helpers can build and fetch EDGAR URLs when explicitly called by future workflows. Scripted SEC requests require a user-supplied `SEC_USER_AGENT`.
 
-Phase 1 does not call SEC by default. Any SEC data used in weekly research should be saved into a reviewed cached snapshot before it is used for repeatable reports.
+Vela does not call SEC by default, and report generation does not call SEC. Any SEC data used in weekly research should be saved into a reviewed cached snapshot before it is used for repeatable reports.
 
 ## FRED
 
 FRED helpers can build and fetch macro data URLs when explicitly called by future workflows. FRED requests require a user-supplied `FRED_API_KEY`.
 
-Phase 1 does not call FRED by default. Macro observations should be copied into cached snapshots with dates and source notes before weekly review.
+Vela does not call FRED by default, and report generation does not call FRED. Macro observations should be copied into cached snapshots with dates and source notes before weekly review.
 
 ## Manual prices
 
 Manual prices are the Phase 1 default. Snapshot price fields may be `null` when no reviewed price has been entered.
 
 `VELA_PRICE_PROVIDER=manual` remains the safe default. Vela does not include live trading, broker execution, or order placement.
+
+Snapshot report generation never adds live trading, broker execution, order placement, or financial advice. Every generated report remains education-only and not financial advice.
 
 ## Refresh cadence
 
