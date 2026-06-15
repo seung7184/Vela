@@ -64,6 +64,13 @@ def read_csv_as_markdown(path: str | Path, max_rows: int = 20) -> str:
     return "\n".join(table)
 
 
+def weekly_context_pack_filename(today: date | None = None) -> str:
+    """Return the deterministic weekly context pack filename."""
+
+    generated_at = today or date.today()
+    return f"{generated_at.isoformat()}_weekly_context_pack.md"
+
+
 def _generation_metadata(*, today: date, ticker: str | None = None) -> str:
     lines = [
         "## Generation metadata",

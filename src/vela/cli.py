@@ -6,7 +6,12 @@ import argparse
 import sys
 from pathlib import Path
 
-from vela.context_pack import build_ticker_context_pack, build_weekly_context_pack, write_context_pack
+from vela.context_pack import (
+    build_ticker_context_pack,
+    build_weekly_context_pack,
+    weekly_context_pack_filename,
+    write_context_pack,
+)
 from vela.generate_report import generate_ticker_report, generate_weekly_review
 from vela.load_portfolio import load_portfolio, portfolio_total_market_value
 from vela.load_watchlist import load_watchlist
@@ -102,8 +107,7 @@ def main(argv: list[str] | None = None) -> int:
                     snapshot_id=args.snapshot_id,
                     snapshot_dir=Path(args.snapshot_dir),
                 )
-                generated_date = content.splitlines()[0].rsplit(" - ", maxsplit=1)[-1]
-                path = write_context_pack(content, output_dir / f"{generated_date}_weekly_context_pack.md")
+                path = write_context_pack(content, output_dir / weekly_context_pack_filename())
         except (SnapshotValidationError, FileNotFoundError, NotADirectoryError, ValueError) as exc:
             print(f"Error: {exc}", file=sys.stderr)
             return 1

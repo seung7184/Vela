@@ -9,6 +9,7 @@ from vela.context_pack import (
     build_ticker_context_pack,
     build_weekly_context_pack,
     read_csv_as_markdown,
+    weekly_context_pack_filename,
     write_context_pack,
 )
 
@@ -81,6 +82,10 @@ def test_read_csv_as_markdown_renders_limited_rows(tmp_path):
         "| VWCE | Vanguard |\n"
         "\n_Showing 2 of 3 rows._"
     )
+
+
+def test_weekly_context_pack_filename_uses_date_explicitly():
+    assert weekly_context_pack_filename(date(2026, 6, 15)) == "2026-06-15_weekly_context_pack.md"
 
 
 def test_ticker_context_pack_contains_policy_csv_disclaimer_and_prompt(tmp_path, monkeypatch):
