@@ -8,6 +8,7 @@ from pathlib import Path
 from vela.generate_report import generate_ticker_report, generate_weekly_review
 from vela.load_portfolio import load_portfolio, portfolio_total_market_value
 from vela.load_watchlist import load_watchlist
+from vela.snapshots import DEFAULT_SNAPSHOT_DIR, load_snapshots, render_snapshot_summary
 
 
 def doctor() -> int:
@@ -34,6 +35,9 @@ def main(argv: list[str] | None = None) -> int:
     weekly_parser = subparsers.add_parser("weekly", help="Generate weekly portfolio review")
     weekly_parser.add_argument("--output-dir", default="reports/weekly")
 
+    snapshot_parser = subparsers.add_parser("snapshot-summary", help="Summarize cached research snapshots")
+    snapshot_parser.add_argument("--snapshot-dir", default=str(DEFAULT_SNAPSHOT_DIR))
+
     args = parser.parse_args(argv)
 
     if args.command == "doctor":
@@ -45,6 +49,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "weekly":
         path = generate_weekly_review(output_dir=Path(args.output_dir))
         print(path)
+        return 0
+    if args.command == "snapshot-summary":
+        print(render_snapshot_summary(load_snapshots(Path(args.snapshot_dir))))
         return 0
     parser.error(f"Unknown command: {args.command}")
     return 2

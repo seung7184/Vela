@@ -1,0 +1,45 @@
+{
+  "created_at": "2026-06-14T20:00:00Z",
+  "data": {
+    "macro": [
+      {
+        "name": "Rates and inflation",
+        "observation": "Placeholder macro note for weekly review.",
+        "source": "manual"
+      },
+      {
+        "name": "ETF core",
+        "observation": "VWCE remains the default benchmark for stock ideas.",
+        "source": "manual"
+      }
+    ],
+    "portfolio": {
+      "base_currency": "EUR",
+      "core_benchmark": "VWCE",
+      "review_mode": "education-only"
+    },
+    "prices": [
+      {
+        "currency": null,
+        "price": null,
+        "provider": "manual",
+        "ticker": "VWCE"
+      },
+      {
+        "currency": null,
+        "price": null,
+        "provider": "manual",
+        "ticker": "NVDA"
+      }
+    ]
+  },
+  "description": "Weekly cached research snapshot for repeatable local review.",
+  "notes": [
+    "Educational use only. Not financial advice.",
+    "No network calls are required to read this snapshot.",
+    "Manual placeholder data should be refreshed intentionally before research use."
+  ],
+  "snapshot_date": "2026-06-14",
+  "snapshot_id": "weekly-2026-06-14",
+  "source": "manual"
+}

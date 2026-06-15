@@ -2,7 +2,7 @@
 
 Vela is an **ETF-first AI investment research OS** for learning, thesis tracking, and portfolio review.
 
-It is deliberately **not** a live trading bot. Phase 0 gives you a local, testable Python + Markdown system that helps you:
+It is deliberately **not** a live trading bot. Vela gives you a local, testable Python + Markdown system that helps you:
 
 - keep an investment policy in plain text;
 - maintain a portfolio and watchlist;
@@ -13,11 +13,12 @@ It is deliberately **not** a live trading bot. Phase 0 gives you a local, testab
 
 > Vela helps you verify stock ideas before they touch your portfolio.
 
-## Phase 0 scope
+## Current scope
 
 Included now:
 
 ```text
+data/processed/snapshots/ Cached JSON snapshots for no-network weekly research
 memory/                 Investment policy and long-term rules
 routines/               Daily and weekly review prompts
 reports/                Generated report output folders
@@ -55,11 +56,14 @@ source .venv/bin/activate
 python -m pip install -e .[dev]
 pytest
 python -m vela.cli doctor
+python -m vela.cli snapshot-summary
 python -m vela.cli ticker NVDA
 python -m vela.cli weekly
 ```
 
 Generated reports are written to `reports/ticker/` and `reports/weekly/`.
+
+Cached research snapshots live under `data/processed/snapshots/`. See `docs/data_sources.md` for the no-network default workflow and source limitations.
 
 ## Environment variables
 
@@ -77,9 +81,9 @@ Optional variables:
 
 ## Repository status
 
-This repository starts with Phase 0. The next phases should be small, reviewable pull requests:
+This repository is built through small, reviewable pull requests:
 
-- Phase 1: richer local data ingestion and cached snapshots;
+- Phase 1: cached snapshots for no-network weekly research;
 - Phase 2: AI-assisted report drafting using saved Markdown context;
 - Phase 3: paper-trading sandbox only, disabled by default;
 - Phase 4: dashboard or notebook layer.
