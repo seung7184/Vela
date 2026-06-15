@@ -58,10 +58,14 @@ pytest
 python -m vela.cli doctor
 python -m vela.cli snapshot-summary
 python -m vela.cli ticker NVDA
+python -m vela.cli ticker NVDA --snapshot-id ticker-nvda-2026-06-14
 python -m vela.cli weekly
+python -m vela.cli weekly --snapshot-id weekly-2026-06-14
 ```
 
 Generated reports are written to `reports/ticker/` and `reports/weekly/`.
+
+Generated reports can be created with or without cached snapshot context. When you pass `--snapshot-id`, Vela reads the matching local JSON snapshot from `data/processed/snapshots/` and adds cached context plus conservative data highlights to the report. Report generation does not refresh data, call APIs, or treat snapshot contents as current market data.
 
 Cached research snapshots live under `data/processed/snapshots/`. See `docs/data_sources.md` for the no-network default workflow and source limitations.
 
