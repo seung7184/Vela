@@ -1,0 +1,31 @@
+{
+  "created_at": "2026-06-14T20:05:00Z",
+  "data": {
+    "benchmark": "VWCE",
+    "manual_price": {
+      "currency": null,
+      "price": null,
+      "provider": "manual",
+      "ticker": "NVDA"
+    },
+    "research_questions": [
+      "What would make NVDA a better risk-adjusted idea than adding to VWCE?",
+      "What downside scenario would invalidate the thesis?",
+      "Which valuation assumptions are most fragile?"
+    ],
+    "ticker": "NVDA",
+    "vwce_alternative_test": {
+      "default_answer": "No - prove otherwise before acting.",
+      "status": "fail"
+    }
+  },
+  "description": "Ticker cached research snapshot for NVDA study.",
+  "notes": [
+    "Educational use only. Not financial advice.",
+    "No broker execution or order placement data is present.",
+    "Price fields are manual placeholders."
+  ],
+  "snapshot_date": "2026-06-14",
+  "snapshot_id": "ticker-nvda-2026-06-14",
+  "source": "manual"
+}

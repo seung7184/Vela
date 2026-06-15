@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from vela.cli import main
@@ -35,3 +36,30 @@ def test_cli_generates_ticker_and_weekly_reports(tmp_path, monkeypatch):
 
     assert list((tmp_path / "reports" / "ticker").glob("NVDA_*.md"))
     assert list((tmp_path / "reports" / "weekly").glob("*_weekly_review.md"))
+
+
+def test_cli_snapshot_summary(tmp_path, monkeypatch, capsys):
+    snapshot_dir = tmp_path / "data" / "processed" / "snapshots"
+    snapshot_dir.mkdir(parents=True)
+    (snapshot_dir / "weekly.json").write_text(
+        json.dumps(
+            {
+                "snapshot_id": "weekly-2026-06-14",
+                "snapshot_date": "2026-06-14",
+                "source": "manual",
+                "created_at": "2026-06-14T20:00:00Z",
+                "description": "Safe cached weekly research snapshot.",
+                "data": {"macro": []},
+                "notes": ["Educational use only. Not financial advice."],
+            }
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.chdir(tmp_path)
+
+    assert main(["snapshot-summary"]) == 0
+
+    output = capsys.readouterr().out
+    assert "Snapshot summary" in output
+    assert "weekly-2026-06-14" in output
+    assert "No network calls are made" in output
