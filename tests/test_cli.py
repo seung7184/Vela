@@ -1,4 +1,5 @@
 import json
+from datetime import date
 from pathlib import Path
 
 from vela.cli import main
@@ -88,6 +89,64 @@ def test_cli_weekly_accepts_snapshot_id(tmp_path, monkeypatch):
     text = report.read_text(encoding="utf-8")
     assert "## Snapshot context" in text
     assert "- snapshot_id: weekly-2026-06-14" in text
+
+
+def test_cli_context_pack_ticker_writes_file(tmp_path, monkeypatch):
+    _write_inputs(tmp_path)
+    _write_snapshot(tmp_path, "ticker-nvda-2026-06-14", "nvda.json")
+    (tmp_path / "memory").mkdir()
+    (tmp_path / "memory" / "investment_policy.md").write_text("# Investment Policy\n\nETF core first.\n", encoding="utf-8")
+    (tmp_path / "memory" / "portfolio_rules.md").write_text("# Portfolio Rules\n\nNo live trading.\n", encoding="utf-8")
+    (tmp_path / "memory" / "thesis_log.md").write_text("# Thesis Log\n\nRecord theses.\n", encoding="utf-8")
+    (tmp_path / "memory" / "watchlist_reasoning.md").write_text("# Watchlist Reasoning\n\nNVDA study.\n", encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+
+    exit_code = main(["context-pack", "ticker", "NVDA", "--snapshot-id", "ticker-nvda-2026-06-14"])
+
+    assert exit_code == 0
+    report = tmp_path / "reports" / "context" / "NVDA_context_pack.md"
+    assert report.exists()
+    text = report.read_text(encoding="utf-8")
+    assert "# Vela Ticker Context Pack - NVDA" in text
+    assert "## Manual AI prompt scaffold" in text
+
+
+def test_cli_context_pack_weekly_writes_file(tmp_path, monkeypatch):
+    _write_inputs(tmp_path)
+    _write_snapshot(tmp_path, "weekly-2026-06-14", "weekly.json")
+    (tmp_path / "memory").mkdir()
+    (tmp_path / "memory" / "investment_policy.md").write_text("# Investment Policy\n\nETF core first.\n", encoding="utf-8")
+    (tmp_path / "memory" / "portfolio_rules.md").write_text("# Portfolio Rules\n\nNo live trading.\n", encoding="utf-8")
+    (tmp_path / "memory" / "thesis_log.md").write_text("# Thesis Log\n\nRecord theses.\n", encoding="utf-8")
+    (tmp_path / "memory" / "watchlist_reasoning.md").write_text("# Watchlist Reasoning\n\nNVDA study.\n", encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+
+    exit_code = main(["context-pack", "weekly", "--snapshot-id", "weekly-2026-06-14"])
+
+    assert exit_code == 0
+    report = tmp_path / "reports" / "context" / f"{date.today().isoformat()}_weekly_context_pack.md"
+    assert report.exists()
+    text = report.read_text(encoding="utf-8")
+    assert "# Vela Weekly Context Pack" in text
+    assert "weekly market review" in text
+
+
+def test_cli_context_pack_missing_snapshot_id_exits_clearly(tmp_path, monkeypatch, capsys):
+    _write_inputs(tmp_path)
+    _write_snapshot(tmp_path, "weekly-2026-06-14", "weekly.json")
+    (tmp_path / "memory").mkdir()
+    (tmp_path / "memory" / "investment_policy.md").write_text("# Investment Policy\n\nETF core first.\n", encoding="utf-8")
+    (tmp_path / "memory" / "portfolio_rules.md").write_text("# Portfolio Rules\n\nNo live trading.\n", encoding="utf-8")
+    (tmp_path / "memory" / "thesis_log.md").write_text("# Thesis Log\n\nRecord theses.\n", encoding="utf-8")
+    (tmp_path / "memory" / "watchlist_reasoning.md").write_text("# Watchlist Reasoning\n\nNVDA study.\n", encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+
+    exit_code = main(["context-pack", "ticker", "NVDA", "--snapshot-id", "missing-snapshot"])
+
+    captured = capsys.readouterr()
+    assert exit_code == 1
+    assert "missing-snapshot" in captured.err
+    assert "Traceback" not in captured.err
 
 
 def test_cli_missing_snapshot_id_exits_clearly(tmp_path, monkeypatch, capsys):

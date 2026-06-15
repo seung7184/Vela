@@ -7,6 +7,7 @@ It is deliberately **not** a live trading bot. Vela gives you a local, testable 
 - keep an investment policy in plain text;
 - maintain a portfolio and watchlist;
 - generate repeatable ticker research notes;
+- generate deterministic context packs for manual AI-assisted study;
 - compare every stock idea against the default ETF alternative;
 - keep decision logs, mistake logs, and weekly reviews;
 - add data providers later without exposing secrets or enabling live brokerage execution.
@@ -19,6 +20,7 @@ Included now:
 
 ```text
 data/processed/snapshots/ Cached JSON snapshots for no-network weekly research
+docs/context_packs.md   Manual AI context pack workflow
 memory/                 Investment policy and long-term rules
 routines/               Daily and weekly review prompts
 reports/                Generated report output folders
@@ -61,11 +63,17 @@ python -m vela.cli ticker NVDA
 python -m vela.cli ticker NVDA --snapshot-id ticker-nvda-2026-06-14
 python -m vela.cli weekly
 python -m vela.cli weekly --snapshot-id weekly-2026-06-14
+python -m vela.cli context-pack ticker NVDA
+python -m vela.cli context-pack ticker NVDA --snapshot-id ticker-nvda-2026-06-14
+python -m vela.cli context-pack weekly
+python -m vela.cli context-pack weekly --snapshot-id weekly-2026-06-14
 ```
 
-Generated reports are written to `reports/ticker/` and `reports/weekly/`.
+Generated reports are written to `reports/ticker/` and `reports/weekly/`. Generated context packs are written to `reports/context/`.
 
 Generated reports can be created with or without cached snapshot context. When you pass `--snapshot-id`, Vela reads the matching local JSON snapshot from `data/processed/snapshots/` and adds cached context plus conservative data highlights to the report. Report generation does not refresh data, call APIs, or treat snapshot contents as current market data.
+
+Context packs prepare copy/paste Markdown for manual analysis in tools such as ChatGPT or Claude. Vela does not call any AI API, does not include OpenAI or Anthropic SDKs, and does not transmit context packs anywhere. See `docs/context_packs.md`.
 
 Cached research snapshots live under `data/processed/snapshots/`. See `docs/data_sources.md` for the no-network default workflow and source limitations.
 
