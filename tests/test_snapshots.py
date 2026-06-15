@@ -176,6 +176,21 @@ def test_snapshot_data_highlights_markdown_is_conservative_and_avoids_raw_dump()
     assert "{'nested'" not in highlights
 
 
+def test_snapshot_data_highlights_formats_cached_price_provider_cleanly():
+    snapshot = _snapshot("ticker-nvda-2026-06-14")
+    snapshot["data"] = {
+        "manual_price": {"ticker": "NVDA", "price": 100.5, "currency": "USD", "provider": "manual"},
+        "prices": [{"ticker": "VWCE", "price": 120.25, "currency": "EUR", "provider": "manual"}],
+    }
+
+    highlights = snapshot_data_highlights_markdown(snapshot)
+
+    assert "NVDA cached price field is 100.5 USD (provider: manual; not live market data)." not in highlights
+    assert "VWCE cached price field is 120.25 EUR (provider: manual; not live market data)." not in highlights
+    assert "NVDA cached price field is 100.5 USD (provider: manual, not live market data)." in highlights
+    assert "VWCE cached price field is 120.25 EUR (provider: manual, not live market data)." in highlights
+
+
 def test_render_snapshot_summary_lists_snapshots():
     summary = render_snapshot_summary([_snapshot("weekly-2026-06-14"), _snapshot("ticker-nvda-2026-06-14")])
 

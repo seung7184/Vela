@@ -165,6 +165,12 @@ def _safe_scalar_pairs(values: dict[str, Any]) -> str:
     return ", ".join(f"{key}={value}" for key, value in safe_items)
 
 
+def _cached_price_context(ticker: str | None, price: int | float, currency: Any, provider: Any) -> str:
+    suffix = f" {currency}" if isinstance(currency, str) and currency else ""
+    source = f"provider: {provider}, " if isinstance(provider, str) and provider else ""
+    return f"- Price context: {ticker} cached price field is {price}{suffix} ({source}not live market data)."
+
+
 def snapshot_data_highlights_markdown(snapshot: dict[str, Any]) -> str:
     """Render conservative highlights from known safe snapshot data fields."""
 
@@ -189,9 +195,7 @@ def snapshot_data_highlights_markdown(snapshot: dict[str, Any]) -> str:
         if price is None:
             lines.append(f"- Price context: {price_ticker} price is a manual placeholder, not live market data.")
         elif isinstance(price, (int, float)):
-            suffix = f" {currency}" if isinstance(currency, str) and currency else ""
-            source = f" provider: {provider};" if isinstance(provider, str) and provider else ""
-            lines.append(f"- Price context: {price_ticker} cached price field is {price}{suffix} ({source} not live market data).")
+            lines.append(_cached_price_context(price_ticker, price, currency, provider))
 
     prices = data.get("prices")
     if isinstance(prices, list):
@@ -207,11 +211,7 @@ def snapshot_data_highlights_markdown(snapshot: dict[str, Any]) -> str:
             if price is None:
                 lines.append(f"- Price context: {price_ticker} price is a manual placeholder, not live market data.")
             elif isinstance(price, (int, float)):
-                suffix = f" {currency}" if isinstance(currency, str) and currency else ""
-                source = f" provider: {provider};" if isinstance(provider, str) and provider else ""
-                lines.append(
-                    f"- Price context: {price_ticker} cached price field is {price}{suffix} ({source} not live market data)."
-                )
+                lines.append(_cached_price_context(price_ticker, price, currency, provider))
 
     macro = data.get("macro")
     if isinstance(macro, list):
