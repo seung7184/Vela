@@ -26,13 +26,17 @@ Use:
 python -m vela.cli snapshot-summary
 python -m vela.cli ticker NVDA --snapshot-id ticker-nvda-2026-06-14
 python -m vela.cli weekly --snapshot-id weekly-2026-06-14
+python -m vela.cli context-pack ticker NVDA --snapshot-id ticker-nvda-2026-06-14
+python -m vela.cli context-pack weekly --snapshot-id weekly-2026-06-14
 ```
 
-The summary command and snapshot-aware report commands read local JSON files only. They do not fetch prices, call SEC, call FRED, place orders, or contact a broker.
+The summary command, snapshot-aware report commands, and context-pack commands read local JSON files only. They do not fetch prices, call SEC, call FRED, call an AI API, place orders, or contact a broker.
 
 Snapshot-aware reports use cached snapshots as report context. They add a `Snapshot context` section and conservative `Snapshot data highlights` section while keeping the normal research discipline sections such as bull case, bear case, downside scenario, VWCE alternative test, and scorecard.
 
-Snapshots can become stale. A cached snapshot should not be treated as current market data or complete market data, even when it contains price, macro, or portfolio fields. Stale snapshots should be refreshed intentionally before they are used for current research.
+Context packs can also include cached snapshots. They combine memory files, portfolio/watchlist CSVs, and optional snapshot sections into deterministic local Markdown that a human can copy into an AI assistant. Vela does not send context packs to ChatGPT, Claude, OpenAI, Anthropic, SEC, FRED, brokers, or any network service.
+
+Snapshots can become stale. A cached snapshot should not be treated as current market data or complete market data, even when it contains price, macro, or portfolio fields. Stale snapshots should be refreshed intentionally before they are used for current research. Context packs preserve that warning and remain education-only, not financial advice.
 
 ## SEC EDGAR
 
@@ -52,7 +56,7 @@ Manual prices are the Phase 1 default. Snapshot price fields may be `null` when 
 
 `VELA_PRICE_PROVIDER=manual` remains the safe default. Vela does not include live trading, broker execution, or order placement.
 
-Snapshot report generation never adds live trading, broker execution, order placement, or financial advice. Every generated report remains education-only and not financial advice.
+Snapshot report and context-pack generation never adds live trading, broker execution, order placement, AI API calls, or financial advice. Every generated report and context pack remains education-only and not financial advice.
 
 ## Refresh cadence
 
